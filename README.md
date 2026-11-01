@@ -50,6 +50,10 @@ Esta versão conta com a interface moderna completa desenvolvida em React + Type
 
 3. Abra o navegador no endereço indicado (geralmente `http://localhost:3000`).
 
+### Publicar no GitHub Pages
+
+O workflow do GitHub Actions publica a aplicação automaticamente a cada envio para a branch `main`. No repositório, acesse **Settings → Pages** e selecione **GitHub Actions** como origem da publicação. Depois que o workflow terminar, o endereço estará disponível na seção **Pages** dessa página.
+
 ---
 
 ## 📁 Estrutura do Repositório
