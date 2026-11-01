@@ -1,0 +1,6 @@
+{
+  "name": "Pytchula - Calculadora Python Divertida",
+  "description": "Calculadora alegre, fácil de usar e colorida com as 4 operações básicas, mascote fofinho e código Python interativo.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
