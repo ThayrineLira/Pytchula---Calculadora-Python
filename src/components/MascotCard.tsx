@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, MessageCircle, Heart, Lightbulb } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
+import mascotImage from '../assets/images/pytchula_mascot_1793566829971.jpg';
 
 interface MascotCardProps {
   message: string;
@@ -48,7 +49,7 @@ export const MascotCard: React.FC<MascotCardProps> = ({ message }) => {
         >
           <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-emerald-400 shadow-md bg-white p-1">
             <img
-              src="/src/assets/images/pytchula_mascot_1793566829971.jpg"
+              src={mascotImage}
               alt="Pytchula - Mascote Alegre da Calculadora Python"
               className="w-full h-full object-cover rounded-xl"
               referrerPolicy="no-referrer"
