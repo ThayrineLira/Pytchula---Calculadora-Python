@@ -8,11 +8,14 @@ class SoundEffectsManager {
   private soundEnabled: boolean = true;
 
   constructor() {
-    // Read user preference from localStorage
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('pytchula_sound_enabled');
-      if (saved !== null) {
-        this.soundEnabled = saved === 'true';
+      try {
+        const saved = window.localStorage.getItem('pytchula_sound_enabled');
+        if (saved !== null) {
+          this.soundEnabled = saved === 'true';
+        }
+      } catch (error) {
+        console.warn('Não foi possível ler a preferência de som salva.', error);
       }
     }
   }
@@ -25,7 +28,9 @@ class SoundEffectsManager {
       }
     }
     if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      this.ctx.resume().catch((error: unknown) => {
+        console.warn('O navegador não permitiu iniciar o áudio.', error);
+      });
     }
   }
 
@@ -36,7 +41,11 @@ class SoundEffectsManager {
   public toggleSound(): boolean {
     this.soundEnabled = !this.soundEnabled;
     if (typeof window !== 'undefined') {
-      localStorage.setItem('pytchula_sound_enabled', String(this.soundEnabled));
+      try {
+        window.localStorage.setItem('pytchula_sound_enabled', String(this.soundEnabled));
+      } catch (error) {
+        console.warn('Não foi possível salvar a preferência de som.', error);
+      }
     }
     if (this.soundEnabled) {
       this.playPop(600);
@@ -66,8 +75,8 @@ class SoundEffectsManager {
 
       osc.start();
       osc.stop(this.ctx.currentTime + 0.08);
-    } catch {
-      // Audio might be blocked until user interaction
+    } catch (error) {
+      console.warn('Não foi possível reproduzir o som de toque.', error);
     }
   }
 
@@ -93,8 +102,8 @@ class SoundEffectsManager {
 
       osc.start();
       osc.stop(this.ctx.currentTime + 0.15);
-    } catch {
-      // Ignore
+    } catch (error) {
+      console.warn('Não foi possível reproduzir o som de operação.', error);
     }
   }
 
@@ -123,8 +132,8 @@ class SoundEffectsManager {
         osc.start(startTime);
         osc.stop(startTime + 0.25);
       });
-    } catch {
-      // Ignore
+    } catch (error) {
+      console.warn('Não foi possível reproduzir o som de sucesso.', error);
     }
   }
 
@@ -150,8 +159,8 @@ class SoundEffectsManager {
 
       osc.start();
       osc.stop(this.ctx.currentTime + 0.25);
-    } catch {
-      // Ignore
+    } catch (error) {
+      console.warn('Não foi possível reproduzir o som de erro.', error);
     }
   }
 
@@ -177,8 +186,8 @@ class SoundEffectsManager {
 
       osc.start();
       osc.stop(this.ctx.currentTime + 0.12);
-    } catch {
-      // Ignore
+    } catch (error) {
+      console.warn('Não foi possível reproduzir o som de limpeza.', error);
     }
   }
 }

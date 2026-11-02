@@ -3,6 +3,9 @@
 As 4 Operações Básicas: Soma (+), Subtração (-), Multiplicação (*) e Divisão (/)
 """
 
+import math
+
+
 def somar(a: float, b: float) -> float:
     """Realiza a adição de dois números: a + b"""
     return a + b
@@ -47,10 +50,13 @@ def main():
             continue
 
         try:
-            num1 = float(input(" Digite o primeiro número: "))
-            num2 = float(input(" Digite o segundo número: "))
+            num1 = float(input(" Digite o primeiro número: ").strip().replace(",", "."))
+            num2 = float(input(" Digite o segundo número: ").strip().replace(",", "."))
         except ValueError:
             print("\n❌ Por favor, digite apenas números válidos!\n")
+            continue
+        if not math.isfinite(num1) or not math.isfinite(num2):
+            print("\n❌ Digite números finitos, sem NaN ou infinito.\n")
             continue
 
         print("-" * 45)

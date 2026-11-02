@@ -20,14 +20,16 @@
 
 ## 🚀 Como Executar os Scripts em Python (Desktop / Terminal)
 
-Este repositório já inclui os arquivos em Python puro prontos para rodar no seu computador (sem precisar instalar nenhuma biblioteca externa, pois o `Tkinter` já vem incluso no Python padrão do Windows, Mac e Linux):
+Este repositório inclui os arquivos em Python puro, sem bibliotecas de terceiros. O Tkinter costuma vir com o Python no Windows e macOS; em algumas distribuições Linux, pode ser necessário instalar o pacote `python3-tk`.
 
 ### 1. Versão com Interface Gráfica (Desktop)
+
 ```bash
 python calculadora_pytchula_gui.py
 ```
 
 ### 2. Versão de Linha de Comando (Terminal / CLI)
+
 ```bash
 python calculadora_pytchula_cli.py
 ```
@@ -36,14 +38,16 @@ python calculadora_pytchula_cli.py
 
 ## 💻 Como Executar a Aplicação Web Interativa
 
-Esta versão conta com a interface moderna completa desenvolvida em React + TypeScript + Tailwind CSS:
+Esta versão conta com a interface moderna completa desenvolvida em React + TypeScript + Tailwind CSS. O botão de download gera os scripts Python a partir dos mesmos arquivos distribuídos no repositório, e inclui a imagem da mascote no script gráfico:
 
 1. **Instale as dependências:**
+
    ```bash
    npm install
    ```
 
 2. **Inicie o servidor de desenvolvimento:**
+
    ```bash
    npm run dev
    ```
@@ -62,6 +66,10 @@ O workflow do GitHub Actions publica a aplicação automaticamente a cada envio 
 ├── calculadora_pytchula_gui.py  # Calculadora gráfica em Python nativo (Tkinter)
 ├── calculadora_pytchula_cli.py  # Calculadora interativa para terminal em Python
 ├── src/
+│   ├── assets/
+│   │   └── images/
+│   │       ├── pytchula_mascot.png # Mascote da interface Tkinter
+│   │       └── pytchula_mascot_1793566829971.jpg # Mascote do site
 │   ├── components/              # Componentes visuais (Visor, Teclado, Mascote, Quiz, Histórico)
 │   ├── utils/                   # Motor matemático, sintetizador de som e templates
 │   ├── App.tsx                  # Aplicação principal
@@ -75,6 +83,7 @@ O workflow do GitHub Actions publica a aplicação automaticamente a cada envio 
 ## 💡 Dica de Python da Pytchula
 
 No Python:
+
 * **Divisão (`/`)**: Sempre retorna um número de ponto flutuante (`float`). Exemplo: `10 / 2` resulta em `5.0`.
 * **ZeroDivisionError**: No Python, dividir qualquer número por `0` dispara a exceção `ZeroDivisionError`.
 * **Multiplicação**: O símbolo matemático `×` é representado pelo asterisco `*`.

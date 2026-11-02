@@ -58,7 +58,11 @@ export default function App() {
 
   // Digit input
   const handleNumber = (digit: string) => {
-    if (displayValue === 'ZeroDivisionError' || waitingForOperand) {
+    if (
+      displayValue === 'ZeroDivisionError' ||
+      displayValue === 'Erro' ||
+      waitingForOperand
+    ) {
       setDisplayValue(digit);
       setWaitingForOperand(false);
     } else {
@@ -69,6 +73,11 @@ export default function App() {
 
   // Decimal point
   const handleDecimal = () => {
+    if (displayValue === 'ZeroDivisionError' || displayValue === 'Erro') {
+      setDisplayValue('0.');
+      setWaitingForOperand(false);
+      return;
+    }
     if (waitingForOperand) {
       setDisplayValue('0.');
       setWaitingForOperand(false);
@@ -82,13 +91,22 @@ export default function App() {
   // Operation selection (+, -, ×, ÷)
   const handleOperation = (op: OperationType) => {
     const currentNum = parseFloat(displayValue);
+    if (!Number.isFinite(currentNum)) {
+      setDisplayValue('0');
+      setPreviousValue(0);
+      setSelectedOperation(op);
+      setHistoryPreview(`0 ${op}`);
+      setWaitingForOperand(true);
+      setMascotMessage(OPERATION_META[op].tip);
+      return;
+    }
 
     // If an operation was already selected and user types another number, perform the pending operation first
     if (previousValue !== null && selectedOperation && !waitingForOperand) {
       const calculation = calculate(previousValue, selectedOperation, currentNum);
 
       if (calculation.isError) {
-        setDisplayValue('ZeroDivisionError');
+        setDisplayValue(String(calculation.result));
         setMascotMessage(calculation.errorMessage || 'Ops! Erro matemático em Python! 🐍');
         setPreviousValue(null);
         setSelectedOperation(null);
@@ -139,7 +157,7 @@ export default function App() {
     setHistory((prev) => [newRecord, ...prev]);
 
     if (calculation.isError) {
-      setDisplayValue('ZeroDivisionError');
+      setDisplayValue(String(calculation.result));
       setMascotMessage(calculation.errorMessage || 'ZeroDivisionError: Não é possível dividir por zero! 🐍🚫');
       sounds.playOops();
     } else {
@@ -167,7 +185,7 @@ export default function App() {
 
   // Backspace
   const handleBackspace = () => {
-    if (waitingForOperand || displayValue === 'ZeroDivisionError') {
+    if (waitingForOperand || displayValue === 'ZeroDivisionError' || displayValue === 'Erro') {
       setDisplayValue('0');
       return;
     }
@@ -180,7 +198,12 @@ export default function App() {
 
   // Toggle positive/negative
   const handleToggleSign = () => {
-    if (displayValue === '0' || displayValue === 'ZeroDivisionError') return;
+    if (waitingForOperand) {
+      setDisplayValue('-0');
+      setWaitingForOperand(false);
+      return;
+    }
+    if (displayValue === '0' || displayValue === 'ZeroDivisionError' || displayValue === 'Erro') return;
     if (displayValue.startsWith('-')) {
       setDisplayValue(displayValue.substring(1));
     } else {

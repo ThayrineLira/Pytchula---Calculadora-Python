@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, MessageCircle, Heart, Lightbulb } from 'lucide-react';
+import { Sparkles, MessageCircle } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 import mascotImage from '../assets/images/pytchula_mascot_1793566829971.jpg';
 

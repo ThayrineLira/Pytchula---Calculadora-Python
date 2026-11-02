@@ -98,7 +98,10 @@ export const MathQuiz: React.FC = () => {
     } else {
       sounds.playOops();
       setStreak(0);
-      setFeedback(`Quase lá! A resposta certa era ${currentQuestion.correctAnswer}. No Python: ${currentQuestion.pyText} = ${currentQuestion.correctAnswer}`);
+      const pythonAnswer = currentQuestion.operation === '÷'
+        ? `${currentQuestion.correctAnswer}.0`
+        : currentQuestion.correctAnswer;
+      setFeedback(`Quase lá! A resposta certa era ${currentQuestion.correctAnswer}. No Python: ${currentQuestion.pyText} = ${pythonAnswer}`);
     }
   };
 

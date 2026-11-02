@@ -1,6 +1,6 @@
 import React from 'react';
 import { History, Trash2, ArrowUpRight, Copy, Check } from 'lucide-react';
-import { CalculationRecord, OPERATION_META } from '../utils/calculatorEngine';
+import { CalculationRecord, formatNumberDisplay, OPERATION_META } from '../utils/calculatorEngine';
 import { sounds } from '../utils/soundEffects';
 
 interface HistoryListProps {
@@ -15,12 +15,21 @@ export const HistoryList: React.FC<HistoryListProps> = ({
   onClearHistory,
 }) => {
   const [copiedId, setCopiedId] = React.useState<string | null>(null);
+  const [copyErrorId, setCopyErrorId] = React.useState<string | null>(null);
 
-  const handleCopy = (id: string, code: string) => {
-    sounds.playPop(600);
-    navigator.clipboard.writeText(code);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
+  const handleCopy = async (id: string, code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      sounds.playPop(600);
+      setCopyErrorId(null);
+      setCopiedId(id);
+      window.setTimeout(() => setCopiedId(null), 2000);
+    } catch (error) {
+      console.error('Não foi possível copiar o código Python.', error);
+      setCopiedId(null);
+      setCopyErrorId(id);
+      window.setTimeout(() => setCopyErrorId(null), 3000);
+    }
   };
 
   return (
@@ -85,7 +94,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({
                     {item.num1} {item.operation} {item.num2}
                   </div>
                   <div className="font-fun font-bold text-slate-900 text-base">
-                    = {item.result}
+                    = {formatNumberDisplay(item.result)}
                   </div>
                 </div>
 
@@ -101,6 +110,10 @@ export const HistoryList: React.FC<HistoryListProps> = ({
                         <Check className="w-3 h-3 text-emerald-600" />
                         <span className="text-emerald-600 font-semibold">Copiado!</span>
                       </>
+                    ) : copyErrorId === item.id ? (
+                      <span role="status" className="text-rose-600 font-semibold">
+                        Falha ao copiar
+                      </span>
                     ) : (
                       <>
                         <Copy className="w-3 h-3" />

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Terminal, Download, Copy, Check, Code2, Play, Sparkles, BookOpen } from 'lucide-react';
+import { Terminal, Download, Copy, Check, Code2, Play } from 'lucide-react';
 import { PYTHON_GUI_SCRIPT, PYTHON_CLI_SCRIPT, downloadFile } from '../utils/pythonTemplates';
 import { sounds } from '../utils/soundEffects';
 
 export const PythonView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'explanation' | 'gui' | 'cli'>('explanation');
   const [copiedType, setCopiedType] = useState<string | null>(null);
+  const [copyErrorType, setCopyErrorType] = useState<string | null>(null);
 
   // Mini live tester
   const [testNum1, setTestNum1] = useState<number>(12);
@@ -25,11 +26,19 @@ export const PythonView: React.FC = () => {
     }
   };
 
-  const handleCopy = (type: string, code: string) => {
-    sounds.playPop(650);
-    navigator.clipboard.writeText(code);
-    setCopiedType(type);
-    setTimeout(() => setCopiedType(null), 2000);
+  const handleCopy = async (type: string, code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      sounds.playPop(650);
+      setCopyErrorType(null);
+      setCopiedType(type);
+      window.setTimeout(() => setCopiedType(null), 2000);
+    } catch (error) {
+      console.error('Não foi possível copiar o código Python.', error);
+      setCopiedType(null);
+      setCopyErrorType(type);
+      window.setTimeout(() => setCopyErrorType(null), 3000);
+    }
   };
 
   const handleDownload = (filename: string, code: string) => {
@@ -278,7 +287,7 @@ print(resultado)  # Saída: 5.0 (float)`}
                 className="btn-bubbly bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm"
               >
                 {copiedType === 'gui' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                {copiedType === 'gui' ? 'Copiado!' : 'Copiar'}
+                {copiedType === 'gui' ? 'Copiado!' : copyErrorType === 'gui' ? 'Falha ao copiar' : 'Copiar'}
               </button>
 
               <button
@@ -315,7 +324,7 @@ print(resultado)  # Saída: 5.0 (float)`}
                 className="btn-bubbly bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm"
               >
                 {copiedType === 'cli' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                {copiedType === 'cli' ? 'Copiado!' : 'Copiar'}
+                {copiedType === 'cli' ? 'Copiado!' : copyErrorType === 'cli' ? 'Falha ao copiar' : 'Copiar'}
               </button>
 
               <button

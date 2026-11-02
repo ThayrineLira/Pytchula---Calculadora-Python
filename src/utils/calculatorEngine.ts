@@ -53,9 +53,16 @@ export function calculate(
   op: OperationType,
   b: number
 ): { result: number | string; isError: boolean; errorMessage?: string; pythonSnippet: string } {
+  if (!Number.isFinite(a) || !Number.isFinite(b)) {
+    return {
+      result: 'Erro',
+      isError: true,
+      errorMessage: 'Digite números finitos para fazer a conta.',
+      pythonSnippet: '# Erro: os valores precisam ser números finitos.',
+    };
+  }
+
   let res: number = 0;
-  let isError = false;
-  let errorMessage: string | undefined;
 
   switch (op) {
     case '+':
@@ -78,10 +85,24 @@ export function calculate(
       }
       res = a / b;
       break;
+    default:
+      return {
+        result: 'Erro',
+        isError: true,
+        errorMessage: 'Operação inválida.',
+        pythonSnippet: '# Erro: operação inválida.',
+      };
   }
 
-  // Fix precision quirks (max 10 decimals, clean trailing zeros)
-  const cleanResult = parseFloat(res.toFixed(10));
+  if (!Number.isFinite(res)) {
+    return {
+      result: 'Erro',
+      isError: true,
+      errorMessage: 'O resultado excede o limite numérico suportado.',
+      pythonSnippet: `# Erro: o resultado de ${a} ${OPERATION_META[op].pyOp} ${b} não é finito.`,
+    };
+  }
+
   const pyOp = OPERATION_META[op].pyOp;
 
   const pythonSnippet = `# Operação em Python:
@@ -89,10 +110,10 @@ a = ${a}
 b = ${b}
 resultado = a ${pyOp} b
 print(f"{a} ${pyOp} {b} = {resultado}")
-# Saída: ${cleanResult}`;
+# Saída: ${res}`;
 
   return {
-    result: cleanResult,
+    result: res,
     isError: false,
     pythonSnippet,
   };
@@ -103,17 +124,14 @@ export function formatNumberDisplay(val: string | number): string {
     if (val === 'ZeroDivisionError' || val === 'Erro') return val;
     // If it ends with '.', don't parse it yet to allow typing '12.'
     if (val.endsWith('.')) {
-      const numPart = parseFloat(val.slice(0, -1));
-      if (isNaN(numPart)) return '0.';
+      const numPart = Number(val.slice(0, -1));
+      if (!Number.isFinite(numPart)) return val;
       return numPart.toLocaleString('pt-BR') + ',';
     }
-    const num = parseFloat(val);
-    if (isNaN(num)) return val;
-    // Format with commas/dots in Brazilian format if decimal
-    const parts = val.split('.');
-    const integerPart = parseFloat(parts[0]).toLocaleString('pt-BR');
-    return parts.length > 1 ? `${integerPart},${parts[1]}` : integerPart;
+    const num = Number(val);
+    if (!Number.isFinite(num)) return val;
+    return num.toLocaleString('pt-BR', { maximumFractionDigits: 20 });
   }
 
-  return val.toLocaleString('pt-BR', { maximumFractionDigits: 10 });
+  return val.toLocaleString('pt-BR', { maximumFractionDigits: 20 });
 }
